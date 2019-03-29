@@ -18,6 +18,9 @@ class DiskCacheUtils:
         else:
             self.dict = json.loads(content)
 
+        self.cacheFile.close()
+
+
     def getValue(self, key):
         if key in self.dict:
             return self.dict.get(key)
@@ -33,3 +36,4 @@ class DiskCacheUtils:
         self.cacheFile = open(self.cacheFile.name, 'w');
         self.cacheFile.write(json.dumps(self.dict))
         self.cacheFile.flush()
+        self.cacheFile.close()

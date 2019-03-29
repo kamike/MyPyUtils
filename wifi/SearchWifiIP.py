@@ -13,13 +13,16 @@ currentJ = cache.getValue("lastJ", 0)
 
 # 扫描局域网可用的ip
 url = 'http://192.168.'
+print("上次进行到的ip:" + url + str(currentI) + "," + str(currentJ))
 for index in range(currentI, 255):
-    cache.setValue("lastI", currentI)
+    cache.setValue("lastI", index)
     for index2 in range(currentJ, 255):
+        cache.setValue("lastJ", index2)
+
         ip = url + str(index) + "." + str(index2) + "/"
         # print("访问ip:" + ip)
         try:
-            response = request.urlopen(ip, None, 5)
+            response = request.urlopen(ip, None, 3)
             html = gzip.decompress(response.read())
             parser = MyHTMLParser()
             print(html)
@@ -33,5 +36,3 @@ for index in range(currentI, 255):
             print("==========成功访问ip:" + ip)
         except OSError as e:
             print("网络超时了......" + ip)
-
-        cache.setValue("lastJ", currentJ)
