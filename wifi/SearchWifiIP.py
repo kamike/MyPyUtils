@@ -4,12 +4,18 @@ from html.parser import HTMLParser
 from urllib import request
 import gzip
 
+from utils.DiskCacheUtils import DiskCacheUtils
 from wifi.TestCache import MyHTMLParser
+
+cache = DiskCacheUtils("G:/python/temp_files/cache.txt")
+currentI = cache.getValue("lastI", 0)
+currentJ = cache.getValue("lastJ", 0)
 
 # 扫描局域网可用的ip
 url = 'http://192.168.'
-for index in range(0, 255):
-    for index2 in range(0, 255):
+for index in range(currentI, 255):
+    cache.setValue("lastI", currentI)
+    for index2 in range(currentJ, 255):
         ip = url + str(index) + "." + str(index2) + "/"
         # print("访问ip:" + ip)
         try:
@@ -27,3 +33,5 @@ for index in range(0, 255):
             print("==========成功访问ip:" + ip)
         except OSError as e:
             print("网络超时了......" + ip)
+
+        cache.setValue("lastJ", currentJ)
