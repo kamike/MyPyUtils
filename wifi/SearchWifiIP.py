@@ -3,11 +3,25 @@
 from html.parser import HTMLParser
 from urllib import request
 import gzip
+from urllib.error import URLError
 
 from utils.DiskCacheUtils import DiskCacheUtils
 from wifi.TestCache import MyHTMLParser
+from bs4 import BeautifulSoup
 
-cache = DiskCacheUtils("G:/python/temp_files/cache.txt")
+
+def getHtmlTitle(html):
+    try:
+        bsObj = BeautifulSoup(html, "html.parser")
+        title = bsObj.body.h1
+    except AttributeError as e:
+        return None
+    return title
+
+
+dir = "G:/python/temp_files"
+
+cache = DiskCacheUtils(dir + "/cache.txt")
 currentI = cache.getValue("lastI", 0)
 currentJ = cache.getValue("lastJ", 0)
 
@@ -21,18 +35,20 @@ for index in range(currentI, 255):
 
         ip = url + str(index) + "." + str(index2) + "/"
         # print("访问ip:" + ip)
+        html = "<html></html>"
         try:
-            response = request.urlopen(ip, None, 3)
-            html = gzip.decompress(response.read())
-            parser = MyHTMLParser()
-            print(html)
-            parser.feed(str(html))
+            response = request.urlopen(ip, None, 7)
+            try:
+                html = gzip.decompress(response.read())
+            except OSError as e:
+                html = response.read()
+            title = getHtmlTitle(html)
 
-            file = open("G:/python/temp_files/ip_history.txt", "a+")
+            file = open(dir + "/ip_history.txt", "a+")
 
-            file.write("成功访问的ip：" + ip + "\tTitle：" + parser.getTitile() + "\n")
+            file.write("成功访问的ip：" + ip + "\tTitle：" + title + "\n")
             file.flush()
             file.close()
             print("==========成功访问ip:" + ip)
-        except OSError as e:
+        except URLError as e:
             print("网络超时了......" + ip)

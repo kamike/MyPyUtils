@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # -*- coding:utf8 -*-
-from utils.DiskCacheUtils import DiskCacheUtils
+import gzip
+from urllib import request
+from urllib.error import HTTPError, URLError
 
-cache = DiskCacheUtils("G:/python/temp_files/cache.txt")
-# cache.setValue("aaa", "11111")
-# cache.setValue("bbbbbbb", "22222222")
-print(cache.getValue("aaa"))
-print(cache.getValue("bbbbbbb"))
-print(cache.getValue("bbbbb"))
+from bs4 import BeautifulSoup
+
+from wifi.TestCache import MyHTMLParser
+
+
+

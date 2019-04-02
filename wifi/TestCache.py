@@ -14,14 +14,17 @@ class MyHTMLParser(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         if tag == 'title':
+            print("==handle_starttag:" + tag)
             self.is_title = True
 
     def handle_endtag(self, tag):
         if tag != 'title':
-            pass
+            print("==handle_endtag:" + tag)
+            self.is_title = False
 
     def handle_data(self, data):
         if (self.is_title):
+            print("==handle_data:" + data)
             self.html_title = data
 
     def getTitile(self):
