@@ -31,7 +31,7 @@ print("上次进行到的ip:" + url + str(currentI) + "," + str(currentJ))
 for index in range(currentI, 255):
     cache.setValue("lastI", index)
     for index2 in range(currentJ, 255):
-        cache.setValue("lastJ", index2)
+
 
         ip = url + str(index) + "." + str(index2) + "/"
         # print("访问ip:" + ip)
@@ -46,9 +46,11 @@ for index in range(currentI, 255):
 
             file = open(dir + "/ip_history.txt", "a+")
 
-            file.write("成功访问的ip：" + ip + "\tTitle：" + title + "\n")
+            file.write("成功访问的ip：" + ip + "\tTitle：" + str(title) + "\n")
             file.flush()
             file.close()
             print("==========成功访问ip:" + ip)
         except URLError as e:
             print("网络超时了......" + ip)
+
+        cache.setValue("lastJ", index2)
