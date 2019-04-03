@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf8 -*-
+from concurrent.futures.thread import ThreadPoolExecutor
 from html.parser import HTMLParser
 from urllib import request
 import gzip
@@ -10,13 +11,28 @@ from wifi.TestCache import MyHTMLParser
 from bs4 import BeautifulSoup
 import threading
 
-class SearchWifiIP(threading.Thread):
-    def __init__(self):
-        super(SearchWifiIP,self).__init__()
 
+class SearchWifiIP:
+    def searchIp(self, url, lastI, lastJ):
+        try:
+            response = request.urlopen(url, None, 7)
+            content = response.read()
+            try:
+                content = gzip.decompress(content)
+            except OSError as e:
+                pass
+            title = self.getHtmlTitle(content)
 
-    def run(self):
-        print("run...")
+            file = open(dir + "/ip_history.txt", "a+")
+
+            file.write("成功访问的ip：" + url + "\tTitle：" + str(title) + "\n")
+            file.flush()
+            file.close()
+            print("==========成功访问ip:" + url)
+        except OSError as e:
+            print("网络超时了......" + url)
+        cache.setValue("lastI", lastI)
+        cache.setValue("lastJ", lastJ)
 
     def getHtmlTitle(html):
         try:
@@ -27,39 +43,18 @@ class SearchWifiIP(threading.Thread):
         return title
 
 
-
 dir = "G:/python/temp_files"
 
 cache = DiskCacheUtils(dir + "/cache.txt")
 currentI = cache.getValue("lastI", 0)
 currentJ = cache.getValue("lastJ", 0)
 
-
 # 扫描局域网可用的ip
 url = 'http://192.168.'
 print("上次进行到的ip:" + url + str(currentI) + "," + str(currentJ))
+executor = ThreadPoolExecutor(max_workers=10)
+search = SearchWifiIP()
 for index in range(currentI, 255):
     for index2 in range(currentJ, 255):
-
-        ip = url + str(index) + "." + str(index2) + "/"
-        # print("访问ip:" + ip)
-        try:
-            response = request.urlopen(ip, None, 7)
-            content = response.read()
-            try:
-                content = gzip.decompress(content)
-            except OSError as e:
-                pass
-            title = getHtmlTitle(content)
-
-            file = open(dir + "/ip_history.txt", "a+")
-
-            file.write("成功访问的ip：" + ip + "\tTitle：" + str(title) + "\n")
-            file.flush()
-            file.close()
-            print("==========成功访问ip:" + ip)
-        except OSError as e:
-            print("网络超时了......" + ip)
-
-        cache.setValue("lastJ", index2)
-    cache.setValue("lastI", index)
+        ip = url + str(index) + "." + str(index2)
+        executor.submit(search.searchIp, ip, index, index2)
