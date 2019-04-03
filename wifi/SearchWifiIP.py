@@ -8,15 +8,24 @@ from urllib.error import URLError
 from utils.DiskCacheUtils import DiskCacheUtils
 from wifi.TestCache import MyHTMLParser
 from bs4 import BeautifulSoup
+import threading
+
+class SearchWifiIP(threading.Thread):
+    def __init__(self):
+        super(SearchWifiIP,self).__init__()
 
 
-def getHtmlTitle(html):
-    try:
-        bsObj = BeautifulSoup(html, "html.parser")
-        title = bsObj.body.h1
-    except AttributeError as e:
-        return None
-    return title
+    def run(self):
+        print("run...")
+
+    def getHtmlTitle(html):
+        try:
+            bsObj = BeautifulSoup(html, "html.parser")
+            title = bsObj.body.h1
+        except AttributeError as e:
+            return None
+        return title
+
 
 
 dir = "G:/python/temp_files"
@@ -24,6 +33,7 @@ dir = "G:/python/temp_files"
 cache = DiskCacheUtils(dir + "/cache.txt")
 currentI = cache.getValue("lastI", 0)
 currentJ = cache.getValue("lastJ", 0)
+
 
 # 扫描局域网可用的ip
 url = 'http://192.168.'
@@ -33,14 +43,14 @@ for index in range(currentI, 255):
 
         ip = url + str(index) + "." + str(index2) + "/"
         # print("访问ip:" + ip)
-        html = "<html></html>"
         try:
             response = request.urlopen(ip, None, 7)
+            content = response.read()
             try:
-                html = gzip.decompress(response.read())
+                content = gzip.decompress(content)
             except OSError as e:
-                html = response.read()
-            title = getHtmlTitle(html)
+                pass
+            title = getHtmlTitle(content)
 
             file = open(dir + "/ip_history.txt", "a+")
 
