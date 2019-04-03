@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
 import threading
 
 
+# 扫描局域网可用的ip
 class SearchWifiIP:
     def searchIp(self, url, lastI, lastJ):
         try:
@@ -30,11 +31,12 @@ class SearchWifiIP:
             file.close()
             print("==========成功访问ip:" + url)
         except OSError as e:
-            print("网络超时了......" + url)
+            if lastJ % 50 == 0:
+                print("网络超时了......" + url)
         cache.setValue("lastI", lastI)
         cache.setValue("lastJ", lastJ)
 
-    def getHtmlTitle(html):
+    def getHtmlTitle(self, html):
         try:
             bsObj = BeautifulSoup(html, "html.parser")
             title = bsObj.body.h1
@@ -49,10 +51,13 @@ cache = DiskCacheUtils(dir + "/cache.txt")
 currentI = cache.getValue("lastI", 0)
 currentJ = cache.getValue("lastJ", 0)
 
-# 扫描局域网可用的ip
+# currentI = 1
+# currentJ = 0
+
+
 url = 'http://192.168.'
 print("上次进行到的ip:" + url + str(currentI) + "," + str(currentJ))
-executor = ThreadPoolExecutor(max_workers=10)
+executor = ThreadPoolExecutor(max_workers=50)
 search = SearchWifiIP()
 for index in range(currentI, 255):
     for index2 in range(currentJ, 255):
