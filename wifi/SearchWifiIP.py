@@ -1,15 +1,11 @@
 #!/usr/bin/env python
 # -*- coding:utf8 -*-
 from concurrent.futures.thread import ThreadPoolExecutor
-from html.parser import HTMLParser
 from urllib import request
 import gzip
-from urllib.error import URLError
 
 from utils.DiskCacheUtils import DiskCacheUtils
-from wifi.TestCache import MyHTMLParser
 from bs4 import BeautifulSoup
-import threading
 
 
 # 扫描局域网可用的ip
