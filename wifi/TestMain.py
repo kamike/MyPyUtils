@@ -6,21 +6,13 @@ from urllib.error import HTTPError, URLError
 
 import time
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+
+import sys
 from bs4 import BeautifulSoup
 
 from wifi.TestCache import MyHTMLParser
 
+path=sys.path[0]
 
-def getHtmlTitle(html):
-    try:
-        bsObj = BeautifulSoup(html, "html.parser")
-        title = bsObj.title.string
-    except AttributeError as e:
-        return None
-    return title
-
-
-respond = request.urlopen("http://192.168.1.240", None, 7)
-html = respond.read()
-print(html)
-print(getHtmlTitle(html))
+print(path)
+print(path.index('\\',len(path)-5,len(path)))

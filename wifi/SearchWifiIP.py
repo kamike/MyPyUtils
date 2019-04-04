@@ -1,14 +1,19 @@
 #!/usr/bin/env python
 # -*- coding:utf8 -*-
+import gzip
 from concurrent.futures.thread import ThreadPoolExecutor
 from urllib import request
-import gzip
+
+from bs4 import BeautifulSoup
+import sys
+import sys
 
 from utils.DiskCacheUtils import DiskCacheUtils
-from bs4 import BeautifulSoup
 
+sys.path.append(sys.path[0].pa+"utils/")
 
 # 扫描局域网可用的ip
+
 class SearchWifiIP:
     def searchIp(self, url, lastI, lastJ):
         try:
