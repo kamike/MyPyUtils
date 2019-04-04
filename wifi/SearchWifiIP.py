@@ -35,7 +35,7 @@ class SearchWifiIP:
     def getHtmlTitle(self, html):
         try:
             bsObj = BeautifulSoup(html, "html.parser")
-            title = bsObj.body.h1
+            title = bsObj.title.string
         except AttributeError as e:
             return None
         return title

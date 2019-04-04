@@ -11,13 +11,16 @@ from bs4 import BeautifulSoup
 from wifi.TestCache import MyHTMLParser
 
 
-def dosmothing():
-    print("dosmothing......")
-    time.sleep(2)
+def getHtmlTitle(html):
+    try:
+        bsObj = BeautifulSoup(html, "html.parser")
+        title = bsObj.title.string
+    except AttributeError as e:
+        return None
+    return title
 
 
-executor = ThreadPoolExecutor(max_workers=3)
-for index in range(10):
-    executor.submit(dosmothing)
-
-print("end...")
+respond = request.urlopen("http://192.168.1.240", None, 7)
+html = respond.read()
+print(html)
+print(getHtmlTitle(html))
