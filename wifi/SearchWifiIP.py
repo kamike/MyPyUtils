@@ -10,7 +10,7 @@ import sys
 
 from utils.DiskCacheUtils import DiskCacheUtils
 
-sys.path.append(sys.path[0].pa+"utils/")
+# sys.path.append(sys.path[0].pa+"utils/")
 
 # 扫描局域网可用的ip
 
